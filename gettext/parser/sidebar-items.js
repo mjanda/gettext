@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Error","Represents an error encountered while parsing an MO file."]],"struct":[["ParseOptions","ParseOptions allows setting options for parsing MO catalogs."]]});
