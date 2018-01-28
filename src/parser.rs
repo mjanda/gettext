@@ -191,7 +191,9 @@ pub fn parse_catalog<R: io::Read>(mut file: R, opts: ParseOptions) -> Result<Cat
                 None => None,
             };
             // extract msg_id singular, ignoring the plural
-            id = match original.iter().position(|x| *x == 0).map(|i| &original[..i]) {
+            id = match original.iter().position(|x| *x == 0).map(
+                |i| &original[..i],
+            ) {
                 Some(b) => try!(encoding.decode(b, Strict)),
                 None => return Err(Eof),
             };
@@ -211,10 +213,12 @@ pub fn parse_catalog<R: io::Read>(mut file: R, opts: ParseOptions) -> Result<Cat
             if n < off + len + 1 {
                 return Err(Eof);
             }
-            translated = try!((&contents[off..off + len])
-                                  .split(|x| *x == 0)
-                                  .map(|b| encoding.decode(b, Strict))
-                                  .collect::<Result<Vec<_>, _>>());
+            translated = try!(
+                (&contents[off..off + len])
+                    .split(|x| *x == 0)
+                    .map(|b| encoding.decode(b, Strict))
+                    .collect::<Result<Vec<_>, _>>()
+            );
             if id == "" {
                 let map = parse_metadata(&*translated[0]).unwrap();
                 if let (Some(c), None) = (map.charset(), opts.force_encoding) {
@@ -310,16 +314,20 @@ fn test_parse_catalog() {
         let reader: &[u8] = include_bytes!("../test_cases/1.mo");
         let catalog = parse_catalog(reader, ParseOptions::new()).unwrap();
         assert_eq!(catalog.strings.len(), 1);
-        assert_eq!(catalog.strings["this is context\x04Text"],
-                   Message::new("Text", Some("this is context"), vec!["Tekstas", "Tekstai"]));
+        assert_eq!(
+            catalog.strings["this is context\x04Text"],
+            Message::new("Text", Some("this is context"), vec!["Tekstas", "Tekstai"])
+        );
     }
 
     {
         let reader: &[u8] = include_bytes!("../test_cases/2.mo");
         let catalog = parse_catalog(reader, ParseOptions::new()).unwrap();
         assert_eq!(catalog.strings.len(), 2);
-        assert_eq!(catalog.strings["Image"],
-                   Message::new("Image", None, vec!["Nuotrauka", "Nuotraukos"]));
+        assert_eq!(
+            catalog.strings["Image"],
+            Message::new("Image", None, vec!["Nuotrauka", "Nuotraukos"])
+        );
     }
 
     {
