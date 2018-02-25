@@ -91,7 +91,7 @@ impl From<Cow<'static, str>> for Error {
 #[derive(Default)]
 pub struct ParseOptions {
     force_encoding: Option<EncodingRef>,
-    force_plural: Option<Box<Fn(u64) -> usize + 'static>>,
+    force_plural: Option<Box<Fn(u64) -> usize + Send + Sync + 'static>>,
 }
 
 impl ParseOptions {
@@ -120,7 +120,7 @@ impl ParseOptions {
     /// If this option is not enabled,
     /// the parser uses the default formula
     /// (`n != 1`).
-    pub fn force_plural<T: Fn(u64) -> usize + 'static>(mut self, plural: T) -> Self {
+    pub fn force_plural<T: Fn(u64) -> usize + Send + Sync + 'static>(mut self, plural: T) -> Self {
         self.force_plural = Some(Box::new(plural));
         self
     }

@@ -69,7 +69,6 @@ pub struct Catalog {
     resolver: Resolver,
 }
 
-unsafe impl Sync for Catalog {}
 
 impl Catalog {
     /// Creates a new, empty gettext catalog.
